@@ -1,5 +1,5 @@
 /*
- * File demonstrates idea of adapting a 3rd party API.
+ * File demonstrates idea of adapting a 3rd party API using german language.
  */
 
 // adaptee
