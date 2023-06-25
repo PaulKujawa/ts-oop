@@ -12,14 +12,14 @@ class GermanBank {
 
 // adapter
 class GermanBankAdapter implements Bank {
-  #bank: GermanBank;
+  private bank: GermanBank;
 
   constructor(bank: GermanBank) {
-    this.#bank = bank;
+    this.bank = bank;
   }
 
   transfer(amount: number) {
-    return this.#bank.überweisen(amount);
+    return this.bank.überweisen(amount);
   }
 }
 

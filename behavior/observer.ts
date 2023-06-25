@@ -6,18 +6,18 @@
  */
 
 class Observable {
-  #observers: Observer[] = [];
+  private observers: Observer[] = [];
 
-  public addObserver(observer: Observer): void {
-    this.#observers.push(observer);
+  addObserver(observer: Observer): void {
+    this.observers.push(observer);
   }
 
-  public deleteObserver(observer: Observer): void {
-    this.#observers.filter((obs) => obs !== observer);
+  deleteObserver(observer: Observer): void {
+    this.observers.filter((obs) => obs !== observer);
   }
 
   protected notifyObservers(value: unknown): void {
-    this.#observers.forEach((observer) => observer.update(this, value));
+    this.observers.forEach((observer) => observer.update(this, value));
   }
 }
 
@@ -29,38 +29,36 @@ interface Observer {
 
 class Product extends Observable {
   name: string;
-  #price: number;
+  private price: number;
 
   constructor(name: string, price: number) {
     super();
     this.name = name;
-    this.#price = price;
+    this.price = price;
   }
 
   raiseBid(bidPrice: number): void {
-    if (this.#price < bidPrice) {
+    if (this.price < bidPrice) {
       console.log(`bid of ${this.name} was raised to ${bidPrice}.`);
 
-      this.#price = bidPrice;
+      this.price = bidPrice;
       this.notifyObservers(bidPrice);
     }
   }
 }
 
 class Bidder implements Observer {
-  #name: string;
+  private name: string;
 
   constructor(name: string) {
-    this.#name = name;
+    this.name = name;
   }
 
   // in theory the types can not be said for so sure, as Bidder could be
   // passed to other Observables, too.
   update(product: Product, value: number): void {
     console.log(
-      `${this.#name} was informed about the new price of ${value} for ${
-        product.name
-      }`
+      `${this.name} was informed about the new price of ${value} for ${product.name}`
     );
   }
 }
