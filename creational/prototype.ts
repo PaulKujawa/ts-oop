@@ -1,5 +1,5 @@
 interface DocumentPrototype {
-  clone(): DocumentPrototype;
+  clone(): this;
 }
 
 class Document implements DocumentPrototype {
@@ -9,7 +9,7 @@ class Document implements DocumentPrototype {
     console.log("expense creation of document");
   }
 
-  clone(): DocumentPrototype {
+  clone(): this {
     // since this class has only fields of primitive type
     // a shallow cloning is sufficient
     return { ...this };
@@ -24,29 +24,20 @@ class DocumentFolder implements DocumentPrototype {
     console.log("expense creation of documentFolder");
   }
 
-  clone(): DocumentPrototype {
+  clone(): this {
     // deep clone as documents is a complex type
     return { ...this, documents: this.documents.map((doc) => doc.clone()) };
   }
 }
 
-type TPrototypes = "document" | "documentFolder";
-
 class DocumentPrototypeManager {
-  private static prototypes = new Map<TPrototypes, DocumentPrototype>();
+  private static prototypes = {
+    document: new Document(),
+    documentFolder: new DocumentFolder(),
+  };
 
-  static {
-    const document = new Document();
-    const documentFolder = new DocumentFolder();
-
-    this.prototypes.set("document", document);
-    this.prototypes.set("documentFolder", documentFolder);
-  }
-
-  static getClone(type: "document"): Document;
-  static getClone(type: "documentFolder"): DocumentFolder;
-  static getClone(type: TPrototypes) {
-    return this.prototypes.get(type)!.clone();
+  static getClone<TKey extends keyof typeof this.prototypes>(type: TKey) {
+    return this.prototypes[type].clone() as (typeof this.prototypes)[TKey];
   }
 }
 
